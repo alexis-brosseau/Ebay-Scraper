@@ -11,7 +11,7 @@ Get the average price of any product on Ebay.
 
 1. Add *EbayScraper.py* to your project directory.
 2. Import it.
-3. Your Done! You can now search for anything. (See the exemple for more details)
+3. Your Done! You can now search for anything. *(See the exemple for more details)*
 
 ### Exemple:
 

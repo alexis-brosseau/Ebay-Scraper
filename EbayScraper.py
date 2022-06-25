@@ -20,11 +20,8 @@ countryDict = {
     'ph': '.ph',
     'pl': '.pl',
     'sg': '.com.sg',
-    'th': '.com.th',
-    'tw': '.com.tw',
     'uk': '.co.uk',
     'us': '.com',
-    'vn': '.vn'
 }
 
 conditionDict = {

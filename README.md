@@ -1,6 +1,6 @@
 # EbayScraper
 Get the average price of any product on Ebay.
-```
+```PYTHON
 import EbayScraping
 
 price = EbayScraping.search('Nintendo Switch', 'ca', 'new')

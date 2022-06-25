@@ -53,6 +53,7 @@ def __getData(query, country, condition=''):
     url = f'https://www.ebay{countryDict[country]}/sch/i.html?_from=R40&_nkw=' + parsedQuery + '&LH_Complete=1&LH_Sold=1' + conditionDict[condition]
     r = requests.get(url)
     soup = BeautifulSoup(r.text, 'lxml')
+    
     return soup
 
 def __parse(soup):

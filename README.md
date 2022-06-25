@@ -24,7 +24,7 @@ price = EbayScraping.search('Nintendo Switch', 'ca', 'new')
 print(price)
 ```
 #### Output:
-The output will be a **dictionary** with the average price, the shipping price and the average total price. Here we can see that the average price for a brand new Nintendo Switch on ebay, including the shipping, is **365.87 CAD**.
+The output will be a **dictionary** with the average sold price, the average shipping price and the average total price. Here we can see that the average price for a brand new Nintendo Switch on ebay, including the shipping, is **365.87 CAD**.
 ```PYTHON
 {'soldPrice': 326.2, 'shippingPrice': 39.67, 'total': 365.87}
 ```

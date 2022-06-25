@@ -1,5 +1,9 @@
 # EbayScraper
 Get the average price of any product on Ebay.
+
+## Requirements: ##
+
+## How to Use: ##
 ```PYTHON
 import EbayScraping
 

@@ -52,7 +52,7 @@ def __getData(query, country, condition=''):
     parsedQuery = urllib.parse.quote(query).replace('%20', '+')
     url = f'https://www.ebay{countryDict[country]}/sch/i.html?_from=R40&_nkw=' + parsedQuery + '&LH_Complete=1&LH_Sold=1' + conditionDict[condition]
     r = requests.get(url)
-    soup = BeautifulSoup(r.text, 'html')
+    soup = BeautifulSoup(r.text, 'html.parser')
     
     return soup
 

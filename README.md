@@ -17,7 +17,7 @@ Get the average price of any product on Ebay.
 ### Exemple:
 
 Here we search for a new Nintendo switch on Ebay Canada. The first parameter is for the **search query**, the second one is for the **country** and the third one is for the **condition** of the item.
-> If the condition is not specify, it will look for all items.
+> If the condition is not specify, it will look for items in any condition.
 ```PYTHON
 import EbayScraping
 

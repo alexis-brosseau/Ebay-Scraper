@@ -66,10 +66,10 @@ def __parse(soup):
             rawSoldPrice = item.find('span', {'class': 's-item__price'})
             rawShippingPrice = item.find('span', {'class': 's-item__shipping s-item__logisticsCost'}).find('span', {'class': 'ITALIC'})
 
-            soldPrice = int("".join(filter(str.isdigit, rawSoldPrice.text.split()[1]))) / 100
+            soldPrice = int("".join(filter(str.isdigit, rawSoldPrice.text))) / 100
 
             if (rawShippingPrice is not None):
-                shippingPrice = int("".join(filter(str.isdigit, rawShippingPrice.text.split()[1]))) / 100
+                shippingPrice = int("".join(filter(str.isdigit, rawShippingPrice.text))) / 100
             else: 
                 shippingPrice = 0
             

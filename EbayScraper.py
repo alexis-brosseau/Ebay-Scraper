@@ -52,7 +52,7 @@ def __getData(query, country, condition=''):
     parsedQuery = urllib.parse.quote(query).replace('%20', '+')
     url = f'https://www.ebay{countryDict[country]}/sch/i.html?_from=R40&_nkw=' + parsedQuery + '&LH_Complete=1&LH_Sold=1' + conditionDict[condition]
     r = requests.get(url)
-    soup = BeautifulSoup(r.text, 'lxml')
+    soup = BeautifulSoup(r.text, 'html')
     
     return soup
 
@@ -64,13 +64,12 @@ def __parse(soup):
         
         if (item.find('span', {'class': 's-item__shipping s-item__logisticsCost'}) is not None) and ('to' not in item.find('span', {'class': 's-item__price'}).text):
             
-            rawSoldPrice = item.find('span', {'class': 's-item__price'})
-            rawShippingPrice = item.find('span', {'class': 's-item__shipping s-item__logisticsCost'}).find('span', {'class': 'ITALIC'})
-
-            soldPrice = int("".join(filter(str.isdigit, rawSoldPrice.text.split()[1]))) / 100
-
-            if (rawShippingPrice is not None):
-                shippingPrice = int("".join(filter(str.isdigit, rawShippingPrice.text.split()[1]))) / 100
+            soldPrice = int(''.join(filter(str.isdigit, item.find('span', {'class': 's-item__price'}).text))) / 100
+            #soldPrice = int(re.sub('[^0-9]', "", item.find('span', {'class': 's-item__price'}).text)) / 100
+            shippingPrice = re.sub('[^0-9]', "",str(item.find('span', {'class': 's-item__shipping s-item__logisticsCost'}).find('span', {'class': 'ITALIC'})))
+            
+            if (shippingPrice != ''):
+                shippingPrice = int(shippingPrice) / 100
             else: 
                 shippingPrice = 0
             

@@ -5,7 +5,6 @@ Get the average price of any product on Ebay.
 
 - **[BeautifulSoup4](https://pypi.org/project/beautifulsoup4/)**
 - **[Requests](https://pypi.org/project/requests/)**
-- **[Lxml](https://pypi.org/project/lxml/)**
 
 ## How to Use: ##
 

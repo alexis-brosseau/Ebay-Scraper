@@ -64,12 +64,13 @@ def __parse(soup):
         
         if (item.find('span', {'class': 's-item__shipping s-item__logisticsCost'}) is not None) and ('to' not in item.find('span', {'class': 's-item__price'}).text):
             
-            soldPrice = int(''.join(filter(str.isdigit, item.find('span', {'class': 's-item__price'}).text))) / 100
-            #soldPrice = int(re.sub('[^0-9]', "", item.find('span', {'class': 's-item__price'}).text)) / 100
-            shippingPrice = re.sub('[^0-9]', "",str(item.find('span', {'class': 's-item__shipping s-item__logisticsCost'}).find('span', {'class': 'ITALIC'})))
-            
-            if (shippingPrice != ''):
-                shippingPrice = int(shippingPrice) / 100
+            rawSoldPrice = item.find('span', {'class': 's-item__price'})
+            rawShippingPrice = item.find('span', {'class': 's-item__shipping s-item__logisticsCost'}).find('span', {'class': 'ITALIC'})
+
+            soldPrice = int("".join(filter(str.isdigit, rawSoldPrice.text.split()[1]))) / 100
+
+            if (rawShippingPrice is not None):
+                shippingPrice = int("".join(filter(str.isdigit, rawShippingPrice.text.split()[1]))) / 100
             else: 
                 shippingPrice = 0
             

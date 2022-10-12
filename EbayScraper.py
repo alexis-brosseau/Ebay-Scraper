@@ -59,38 +59,27 @@ def __parse(soup):
     results = soup.find_all('div', {'class': 's-item__info clearfix'})
     productList = []
     
-    for item in results:
-        
-        if (item.find('span', {'class': 's-item__shipping s-item__logisticsCost'}) is not None) and (item.find('span', {'class': 'DEFAULT POSITIVE ITALIC'}) is None):
-            
-            rawSoldPrice = item.find('span', {'class': 's-item__price'})
-            rawShippingPrice = item.find('span', {'class': 's-item__shipping s-item__logisticsCost'}).find('span', {'class': 'ITALIC'})
-
-            soldPrice = int("".join(filter(str.isdigit, rawSoldPrice.text))) / 100
-
-            if (rawShippingPrice is not None):
-                shippingPrice = int("".join(filter(str.isdigit, rawShippingPrice.text))) / 100
-            else: 
-                shippingPrice = 0
-            
-            product = {
-                'soldPrice': soldPrice,
-                'shippingPrice': shippingPrice
-            }
-            productList.append(product)
-            
-    return productList
-
-def __average(list):
-    averageSold = 0
-    averageShipping = 0
+    rawPrices = [item.get_text(strip=True) for item in soup.find_all(class_="s-item__price")]
+    averageLength = sum(map(len, rawPrices)) / len(rawPrices)
     
-    for i in list:
-        averageSold += i['soldPrice']
-        averageShipping += i['shippingPrice']
+    soldPrices = [item for item in rawPrices if not(len(item) < averageLength-1) and not(len(item) > averageLength+1)]
+    soldPrices = [int("".join(filter(str.isdigit, price))) / 100 for price in soldPrices]
+    
+    shippingPrices = [item.get_text(strip=True) for item in soup.find_all(class_="s-item__shipping s-item__logisticsCost")]
+    shippingPrices = [int("".join(filter(str.isdigit, price))) / 100 for price in shippingPrices if ("".join(filter(str.isdigit, price)) != '')]
+    
+    data = {
+        'soldPrices': soldPrices,
+        'shippingPrices': shippingPrices
+    }
+    
+    return data
 
-    averageSold /= len(list)
-    averageShipping /= len(list)
+
+def __average(data):
+    
+    averageSold = sum(data['soldPrices']) / len(data['soldPrices'])
+    averageShipping = sum(data['shippingPrices']) / len(data['shippingPrices'])
     
     averagePrice = {
         'soldPrice': round(averageSold, 2),

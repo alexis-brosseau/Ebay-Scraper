@@ -1,5 +1,5 @@
 # Ebay Scraper
-Get the average price of any product on Ebay.
+Get the average price of any product on Ebay based on items already sold.
 
 ## Requirements: ##
 

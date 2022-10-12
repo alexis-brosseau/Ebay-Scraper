@@ -61,7 +61,7 @@ def __parse(soup):
     
     for item in results:
         
-        if (item.find('span', {'class': 's-item__shipping s-item__logisticsCost'}) is not None) and ('to' not in item.find('span', {'class': 's-item__price'}).text):
+        if (item.find('span', {'class': 's-item__shipping s-item__logisticsCost'}) is not None) and (item.find('span', {'class': 'DEFAULT POSITIVE ITALIC'}) is None):
             
             rawSoldPrice = item.find('span', {'class': 's-item__price'})
             rawShippingPrice = item.find('span', {'class': 's-item__shipping s-item__logisticsCost'}).find('span', {'class': 'ITALIC'})

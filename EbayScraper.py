@@ -41,8 +41,8 @@ def search(query, country='us', condition='all'):
         raise Exception('Condition not supported, please use one of the following: ' + ', '.join(conditionDict.keys()))
     
     soup = __getData(query, country, condition)
-    productList = __parse(soup)
-    averagePrice = __average(productList)
+    dataList = __parse(soup)
+    averagePrice = __average(dataList)
     
     return averagePrice
 
@@ -56,8 +56,6 @@ def __getData(query, country, condition=''):
     return soup
 
 def __parse(soup):
-    results = soup.find_all('div', {'class': 's-item__info clearfix'})
-    productList = []
     
     rawPrices = [item.get_text(strip=True) for item in soup.find_all(class_="s-item__price")]
     averageLength = sum(map(len, rawPrices)) / len(rawPrices)

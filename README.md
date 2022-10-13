@@ -4,7 +4,6 @@ Get the average price of any product on Ebay based on items already sold.
 ## Requirements: ##
 
 - **[BeautifulSoup4](https://pypi.org/project/beautifulsoup4/)**
-- **[Requests](https://pypi.org/project/requests/)**
 
 ## How to Use: ##
 

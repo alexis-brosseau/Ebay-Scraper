@@ -1,5 +1,6 @@
 import urllib.parse
 import urllib.request
+import statistics
 from bs4 import BeautifulSoup
 
 countryDict = {
@@ -40,49 +41,45 @@ def search(query, country='us', condition='all'):
     if condition not in conditionDict:
         raise Exception('Condition not supported, please use one of the following: ' + ', '.join(conditionDict.keys()))
     
-    soup = __getData(query, country, condition)
-    dataList = __parse(soup)
-    averagePrice = __average(dataList)
+    soup = __getHTML(query, country, condition)
+    data = __parsePrices(soup)
+
+    averagePrice = {
+        'soldPrice': round(statistics.mean(data['soldPrices']), 2),
+        'shippingPrice': round(statistics.mean(data['shippingPrices']), 2),
+        'total': round(statistics.mean(data['soldPrices']) + statistics.mean(data['shippingPrices']), 2)
+    }
     
     return averagePrice
 
-def __getData(query, country, condition=''):
+def __getHTML(query, country, condition=''):
     
+    # Build the URL
     parsedQuery = urllib.parse.quote(query).replace('%20', '+')
     url = f'https://www.ebay{countryDict[country]}/sch/i.html?_from=R40&_nkw=' + parsedQuery + '&LH_Complete=1&LH_Sold=1' + conditionDict[condition]
+    
+    # Get the web page HTML
     request = urllib.request.urlopen(url)
     soup = BeautifulSoup(request.read(), 'html.parser')
 
     return soup
 
-def __parse(soup):
+def __parsePrices(soup):
     
-    rawPrices = [item.get_text(strip=True) for item in soup.find_all(class_="s-item__price")]
-    averageLength = sum(map(len, rawPrices)) / len(rawPrices)
+    # Get item prices
+    rawSoldPrices = [item.get_text(strip=True) for item in soup.find_all(class_="s-item__price")]
+    soldPrices = [int("".join(filter(str.isdigit, price))) / 100 for price in rawSoldPrices]
     
-    soldPrices = [item for item in rawPrices if not(len(item) < averageLength-1) and not(len(item) > averageLength+1)]
-    soldPrices = [int("".join(filter(str.isdigit, price))) / 100 for price in soldPrices]
+    # Get shipping prices
+    rawShippingPrices = [item.get_text(strip=True) for item in soup.find_all(class_="s-item__shipping s-item__logisticsCost")]
+    shippingPrices = [int("".join(filter(str.isdigit, price))) / 100 for price in rawShippingPrices if ("".join(filter(str.isdigit, price)) != '')]
     
-    shippingPrices = [item.get_text(strip=True) for item in soup.find_all(class_="s-item__shipping s-item__logisticsCost")]
-    shippingPrices = [int("".join(filter(str.isdigit, price))) / 100 for price in shippingPrices if ("".join(filter(str.isdigit, price)) != '')]
+    # Remove prices too high or too low
+    soldPrices = [price for price in soldPrices if (price > statistics.mean(soldPrices) - statistics.stdev(soldPrices)) and (price < statistics.mean(soldPrices) + statistics.stdev(soldPrices))]
+    shippingPrices = [price for price in shippingPrices if (price > statistics.mean(shippingPrices) - statistics.stdev(shippingPrices)) and (price < statistics.mean(shippingPrices) + statistics.stdev(shippingPrices))]
     
     data = {
         'soldPrices': soldPrices,
         'shippingPrices': shippingPrices
     }
-    
     return data
-
-
-def __average(data):
-    
-    averageSold = sum(data['soldPrices']) / len(data['soldPrices'])
-    averageShipping = sum(data['shippingPrices']) / len(data['shippingPrices'])
-    
-    averagePrice = {
-        'soldPrice': round(averageSold, 2),
-        'shippingPrice': round(averageShipping, 2),
-        'total': round(averageSold + averageShipping, 2)
-    }
-
-    return averagePrice

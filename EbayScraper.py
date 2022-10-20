@@ -68,11 +68,13 @@ def __parsePrices(soup):
     
     # Get item prices
     rawSoldPrices = [item.get_text(strip=True) for item in soup.find_all(class_="s-item__price")]
-    soldPrices = [int("".join(filter(str.isdigit, price))) / 100 for price in rawSoldPrices]
-    
+    soldPrices = [int("".join(filter(str.isdigit, price))) / 100 for price in rawSoldPrices if (len(price) > statistics.mean(map(len, rawSoldPrices)) - 1.5) and (len(price) < statistics.mean(map(len, rawSoldPrices)) + 1.5)]
+   
     # Get shipping prices
     rawShippingPrices = [item.get_text(strip=True) for item in soup.find_all(class_="s-item__shipping s-item__logisticsCost")]
     shippingPrices = [int("".join(filter(str.isdigit, price))) / 100 for price in rawShippingPrices if ("".join(filter(str.isdigit, price)) != '')]
+    
+    print(soldPrices)
     
     # Remove prices too high or too low
     soldPrices = [price for price in soldPrices if (price > statistics.mean(soldPrices) - statistics.stdev(soldPrices)) and (price < statistics.mean(soldPrices) + statistics.stdev(soldPrices))]
@@ -82,4 +84,5 @@ def __parsePrices(soup):
         'soldPrices': soldPrices,
         'shippingPrices': shippingPrices
     }
+    
     return data

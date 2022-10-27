@@ -11,6 +11,8 @@ Get the average price of any product on Ebay based on items already sold.
 2. Import it.
 3. Your Done! You can now search for anything. *(See the bellow for more details)*
 
+---
+
 ### Average Function:
 
 Here we search for a new Nintendo switch on Ebay Canada. The first parameter is for the *search query*, the second one is for the *country* and the third one is for the *condition* of the item.
@@ -25,6 +27,9 @@ The output will be a **dictionary** with the average sold price, the average shi
 ```PYTHON
 {'soldPrice': 326.2, 'shippingPrice': 39.67, 'total': 365.87}
 ```
+
+---
+
 
 ### Items Function:
 

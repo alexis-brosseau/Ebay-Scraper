@@ -17,7 +17,7 @@ Here we search for a new Nintendo switch on Ebay Canada. The first parameter is 
 ```PYTHON
 import EbayScraping
 
-price = EbayScraping.search('Nintendo Switch', 'ca', 'new')
+price = EbayScraping.Average('Nintendo Switch', 'ca', 'new')
 print(price)
 ```
 #### Output:

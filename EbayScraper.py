@@ -130,7 +130,7 @@ def __ParseItems(soup):
     priceList = [item['price'] for item in data]
     data = [item for item in data if (__Average(priceList) + __StDev(priceList) * 1.5 > item['price'] > __Average(priceList) - __StDev(priceList) * 1.5)]
     
-    return sorted(data, key=lambda dic: dic['price'])
+    return sorted(data, key=lambda dic: dic['price'] + dic['shipping'])
 
 def __ParsePrices(soup):
     

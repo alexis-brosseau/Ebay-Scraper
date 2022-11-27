@@ -33,7 +33,7 @@ The output will be a **dictionary** with the average sold price, the average shi
 
 ### Items Function:
 
-Like the **Average Function**, the first parameter is for the *search query*, the second one is for the *country* and the third one is for the *condition* of the item. The difference here is that this function return a **list** of **dictionary** with data about each item. Since the **list** returned is sorted by price + shipping, here we search for the cheapest auction of Nintendo Switch in Canada.
+Like the **Average Function**, the first parameter is for the *search query*, the second one is for the *country* and the third one is for the *condition* of the item. The difference here is that this function return a **list** of **dictionary** with data about each item. Since the **list** returned is sorted by price + shipping, here we get the cheapest auction of Nintendo Switch in Canada.
 ```PYTHON
 import EbayScraping
 

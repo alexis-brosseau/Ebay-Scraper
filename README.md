@@ -43,5 +43,5 @@ print(cheapestItem[0])
 #### Output:
 The output will be a **dictionary** with all the information about the item.
 ```PYTHON
-{'title': 'MSI Gaming GeForce RTX 3060 12GB 15 Gbps GDRR6 192-Bit HDMI/DP PCIe 4 NEW SEALED', 'price': 339.04, 'shipping': 0, 'time-left': '3d 4h left', 'time-end': '(Sun, 12:25 p.m.)', 'bid-count': 14, 'reviews-count': 0, 'url': 'https://www.ebay.ca/itm/...'}
+{'title': 'MSI Gaming GeForce RTX 3060 12GB NEW SEALED', 'price': 339.04, 'shipping': 0, 'time-left': '3d 4h left', 'time-end': '(Sun, 12:25 p.m.)', 'bid-count': 14, 'reviews-count': 0, 'url': 'https://www.ebay.ca/itm/...'}
 ```

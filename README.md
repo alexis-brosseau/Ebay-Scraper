@@ -37,8 +37,8 @@ Like the **Average Function**, the first parameter is for the *search query*, th
 ```PYTHON
 import EbayScraping
 
-cheapestItem = EbayScraping.Items(query='Nintendo Switch', country='ca', condition='new', type='auction')[0]
-print(cheapestItem)
+cheapestItem = EbayScraping.Items(query='Nintendo Switch', country='ca', condition='new', type='auction')
+print(cheapestItem[0])
 ```
 #### Output:
 The output will be a **dictionary** with all the information about the item.

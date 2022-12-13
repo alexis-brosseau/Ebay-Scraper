@@ -38,7 +38,7 @@ typeDict = {
     'offers': '&LH_BO=1'
 }
 
-def Items(query, country='us', condition='all'):
+def Items(query, country='us', condition='all', type='all'):
     
     if country not in countryDict:
         raise Exception('Country not supported, please use one of the following: ' + ', '.join(countryDict.keys()))
@@ -46,7 +46,7 @@ def Items(query, country='us', condition='all'):
     if condition not in conditionDict:
         raise Exception('Condition not supported, please use one of the following: ' + ', '.join(conditionDict.keys()))
     
-    soup = __GetHTML(query, country, condition, type='all', alreadySold=False)
+    soup = __GetHTML(query, country, condition, type, alreadySold=False)
     data = __ParseItems(soup)
     
     return data
@@ -88,7 +88,7 @@ def __ParseItems(soup):
     rawItems = soup.find_all('div', {'class': 's-item__info clearfix'})
     data = []
 
-    for item in rawItems:
+    for item in rawItems[1:]:
         
         #Get item data
         title = item.find(class_="s-item__title").find('span').get_text(strip=True)
@@ -136,7 +136,7 @@ def __ParsePrices(soup):
     
     # Get item prices
     rawPriceList = [price.get_text(strip=True) for price in soup.find_all(class_="s-item__price")]
-    priceList = [int("".join(filter(str.isdigit, price))) / 100 for price in rawPriceList if (len(price) > __Average(map(len, rawPriceList)) - 1.5) and (len(price) < __Average(map(len, rawPriceList)) + 1.5)]
+    priceList = [int("".join(filter(str.isdigit, price))) / 100 for price in rawPriceList if (len(price) > __Average(list(map(len, rawPriceList))) - 1.5) and (len(price) < __Average(list(map(len, rawPriceList))) + 1.5)]
     
     # Get shipping prices
     rawShippingList = [item.get_text(strip=True) for item in soup.find_all(class_="s-item__shipping s-item__logisticsCost")]
@@ -154,15 +154,18 @@ def __ParsePrices(soup):
 
 def __Average(numberList):
 
+    #Remove too big number with their len()
     numberList = [number for number in numberList if round(sum(map(lambda nmbr: len(str(nmbr)), numberList)) / len(numberList)) - 1 <= len(str(number)) <= round(sum(map(lambda nmbr: len(str(nmbr)), numberList)) / len(numberList)) + 1]
-
-    numberList = list(numberList)
+    
+    if len(list(numberList)) == 0: return 0
     return sum(numberList) / len(list(numberList))
 
 def __StDev(numberList):
     
     #Overflow bug Fix. Remove too big number first with their len()
     numberList = [number for number in numberList if round(sum(map(lambda nmbr: len(str(nmbr)), numberList)) / len(numberList)) - 1 <= len(str(number)) <= round(sum(map(lambda nmbr: len(str(nmbr)), numberList)) / len(numberList)) + 1]
+    
+    if len(list(numberList)) == 0: return 0
     
     nominator = sum(map(lambda x: (x - sum(numberList) / len(numberList)) ** 2, numberList))
     stdev = (nominator / ( len(numberList) - 1)) ** 0.5

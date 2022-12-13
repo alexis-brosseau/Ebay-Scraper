@@ -25,7 +25,7 @@ print(averagePrice)
 #### Output:
 The output will be a **dictionary** with the average sold price, the average shipping price and the average total price of the item searched. Here we can see that the average price for a brand new Nintendo Switch on Ebay, including the shipping, is **365.87 CAD**.
 ```PYTHON
-{'pice': 326.2, 'shipping': 39.67, 'total': 365.87}
+{'price': 326.2, 'shipping': 39.67, 'total': 365.87}
 ```
 
 ---

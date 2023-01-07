@@ -45,6 +45,9 @@ def Items(query, country='us', condition='all', type='all'):
 
     if condition not in conditionDict:
         raise Exception('Condition not supported, please use one of the following: ' + ', '.join(conditionDict.keys()))
+        
+    if type not in typeDict:
+        raise Exception('Type not supported, please use one of the following: ' + ', '.join(typeDict.keys()))
     
     soup = __GetHTML(query, country, condition, type, alreadySold=False)
     data = __ParseItems(soup)

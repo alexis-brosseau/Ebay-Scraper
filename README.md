@@ -37,7 +37,7 @@ Like the **Average Function**, the first parameter is for the *search query*, th
 ```PYTHON
 import EbayScraping
 
-itemList = EbayScraping.Items(query='RTX 3060, country='ca', condition='new', type='auction')
+itemList = EbayScraping.Items(query='RTX 3060', country='ca', condition='new', type='auction')
 print(itemList[0])
 ```
 #### Output:

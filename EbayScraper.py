@@ -128,10 +128,13 @@ def __ParseItems(soup):
         
         data.append(itemData)
     
-    
-    # Remove item with prices too high or too low; Accept Between -1.5 StDev to +1.5 StDev
     priceList = [item['price'] for item in data]
-    data = [item for item in data if (__Average(priceList) + __StDev(priceList) * 1.5 > item['price'] > __Average(priceList) - __StDev(priceList) * 1.5)]
+    
+    avgPrice = __Average(priceList)
+    stdevPrice = __StDev(priceList)
+    # Remove item with prices too high or too low; Accept Between -1.5 StDev to +1.5 StDev
+    
+    data = [item for item in data if (avgPrice + stdevPrice * 1.5 > item['price'] > avgPrice - stdevPrice * 1.5)]
     
     return sorted(data, key=lambda dic: dic['price'] + dic['shipping'])
 
@@ -139,15 +142,22 @@ def __ParsePrices(soup):
     
     # Get item prices
     rawPriceList = [price.get_text(strip=True) for price in soup.find_all(class_="s-item__price")]
-    priceList = [int("".join(filter(str.isdigit, price))) / 100 for price in rawPriceList if (len(price) > __Average(list(map(len, rawPriceList))) - 1.5) and (len(price) < __Average(list(map(len, rawPriceList))) + 1.5)]
+    priceList = [int("".join(filter(str.isdigit, price))) / 100 for price in rawPriceList]
     
     # Get shipping prices
     rawShippingList = [item.get_text(strip=True) for item in soup.find_all(class_="s-item__shipping s-item__logisticsCost")]
     shippingList = [int("".join(filter(str.isdigit, price))) / 100 for price in rawShippingList if ("".join(filter(str.isdigit, price)) != '')]
     
+    
+    avgPrice = __Average(priceList)
+    stdevPrice = __StDev(priceList)
+    
+    avgShipping = __Average(shippingList)
+    stdevShipping = __StDev(shippingList)
+    
     # Remove prices too high or too low; Accept Between -1.5 StDev to +1.5 StDev
-    priceList = [price for price in priceList if (__Average(priceList) + __StDev(priceList) * 1.5 > price > __Average(priceList) - __StDev(priceList) * 1.5)]
-    shippingList = [price for price in shippingList if (__Average(priceList) + __StDev(priceList) * 1.5 > price > __Average(priceList) - __StDev(priceList) * 1.5)]
+    priceList = [price for price in priceList if (avgPrice + stdevPrice * 1.5 > price > avgPrice - stdevPrice * 1.5)]
+    shippingList = [price for price in shippingList if (avgShipping + stdevShipping * 1.5 > price > avgShipping - stdevShipping * 1.5)]
     
     data = {
         'price-list': priceList,
@@ -155,22 +165,34 @@ def __ParsePrices(soup):
     }
     return data
 
+def __ParseList(numberList):
+    
+    #Format to string for two decimal after the point
+    numberList = ['{:.2f}'.format(number) for number in numberList]
+    
+    #Overflow bug Fix. Remove too big number first with their len()
+    averageLen = round(sum(map(lambda nmbr: len(str(nmbr)), numberList)) / len(numberList));
+    numberList = [number for number in numberList if averageLen - 1 < len(str(number)) < averageLen + 1]
+    
+    #Reformat to int 
+    numberList = [float(number) for number in numberList]
+
+    return numberList
+
 def __Average(numberList):
 
-    #Remove too big number with their len()
-    numberList = [number for number in numberList if round(sum(map(lambda nmbr: len(str(nmbr)), numberList)) / len(numberList)) - 1 <= len(str(number)) <= round(sum(map(lambda nmbr: len(str(nmbr)), numberList)) / len(numberList)) + 1]
+    numberList = __ParseList(numberList);
     
     if len(list(numberList)) == 0: return 0
     return sum(numberList) / len(list(numberList))
 
 def __StDev(numberList):
     
-    #Overflow bug Fix. Remove too big number first with their len()
-    numberList = [number for number in numberList if round(sum(map(lambda nmbr: len(str(nmbr)), numberList)) / len(numberList)) - 1 <= len(str(number)) <= round(sum(map(lambda nmbr: len(str(nmbr)), numberList)) / len(numberList)) + 1]
-    
+    numberList = __ParseList(numberList);
+
     if len(list(numberList)) == 0: return 0
     
     nominator = sum(map(lambda x: (x - sum(numberList) / len(numberList)) ** 2, numberList))
     stdev = (nominator / ( len(numberList) - 1)) ** 0.5
-    
+
     return stdev

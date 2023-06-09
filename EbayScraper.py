@@ -1,3 +1,4 @@
+import re
 import urllib.parse
 import urllib.request
 from bs4 import BeautifulSoup
@@ -64,14 +65,15 @@ def Average(query, country='us', condition='all'):
     
     soup = __GetHTML(query, country, condition, type='all', alreadySold=True)
     data = __ParsePrices(soup)
-
-    averagePrice = {
-        'price': round(__Average(data['price-list']), 2),
-        'shipping': round(__Average(data['shipping-list']), 2),
-        'total': round(__Average(data['price-list']) + __Average(data['shipping-list']), 2)
-    }
     
-    return averagePrice
+    avgPrice = round(__Average(data['price-list']), 2)
+    avgShipping = round(__Average(data['shipping-list']), 2)
+    
+    return {
+        'price': avgPrice,
+        'shipping': avgShipping,
+        'total': round(avgPrice + avgShipping, 2)
+    }
 
 def __GetHTML(query, country, condition='', type='all', alreadySold=True):
     
@@ -80,7 +82,7 @@ def __GetHTML(query, country, condition='', type='all', alreadySold=True):
     # Build the URL
     parsedQuery = urllib.parse.quote(query).replace('%20', '+')
     url = f'https://www.ebay{countryDict[country]}/sch/i.html?_from=R40&_nkw=' + parsedQuery + alreadySoldString + conditionDict[condition] + typeDict[type]
-    
+
     # Get the web page HTML
     request = urllib.request.urlopen(url)
     soup = BeautifulSoup(request.read(), 'html.parser')
@@ -96,9 +98,9 @@ def __ParseItems(soup):
         #Get item data
         title = item.find(class_="s-item__title").find('span').get_text(strip=True)
         
-        price = int("".join(filter(str.isdigit, item.find('span', {'class': 's-item__price'}).get_text(strip=True)))) / 100
+        price = __ParseRawPrice(item.find('span', {'class': 's-item__price'}).get_text(strip=True))
         
-        try: shipping = int("".join(filter(str.isdigit, item.find('span', {'class': 's-item__shipping s-item__logisticsCost'}).find('span', {'class': 'ITALIC'}).get_text(strip=True)))) / 100 
+        try: shipping = __ParseRawPrice(item.find('span', {'class': 's-item__shipping s-item__logisticsCost'}).find('span', {'class': 'ITALIC'}).get_text(strip=True))
         except: shipping = 0
         
         try: timeLeft = item.find(class_="s-item__time-left").get_text(strip=True)
@@ -128,13 +130,10 @@ def __ParseItems(soup):
         
         data.append(itemData)
     
+    # Remove item with prices too high or too low
     priceList = [item['price'] for item in data]
-    
-    avgPrice = __Average(priceList)
-    stdevPrice = __StDev(priceList)
-    # Remove item with prices too high or too low; Accept Between -1.5 StDev to +1.5 StDev
-    
-    data = [item for item in data if (avgPrice + stdevPrice * 1.5 > item['price'] > avgPrice - stdevPrice * 1.5)]
+    parsedPriceList = __StDevParse(priceList)
+    data = [item for item in data if item['price'] in parsedPriceList]
     
     return sorted(data, key=lambda dic: dic['price'] + dic['shipping'])
 
@@ -142,57 +141,50 @@ def __ParsePrices(soup):
     
     # Get item prices
     rawPriceList = [price.get_text(strip=True) for price in soup.find_all(class_="s-item__price")]
-    priceList = [int("".join(filter(str.isdigit, price))) / 100 for price in rawPriceList]
+    priceList = [price for price in map(lambda rawPrice:__ParseRawPrice(rawPrice), rawPriceList) if price != None]
     
     # Get shipping prices
     rawShippingList = [item.get_text(strip=True) for item in soup.find_all(class_="s-item__shipping s-item__logisticsCost")]
-    shippingList = [int("".join(filter(str.isdigit, price))) / 100 for price in rawShippingList if ("".join(filter(str.isdigit, price)) != '')]
-    
-    
-    avgPrice = __Average(priceList)
-    stdevPrice = __StDev(priceList)
-    
-    avgShipping = __Average(shippingList)
-    stdevShipping = __StDev(shippingList)
-    
-    # Remove prices too high or too low; Accept Between -1.5 StDev to +1.5 StDev
-    priceList = [price for price in priceList if (avgPrice + stdevPrice * 1.5 > price > avgPrice - stdevPrice * 1.5)]
-    shippingList = [price for price in shippingList if (avgShipping + stdevShipping * 1.5 > price > avgShipping - stdevShipping * 1.5)]
-    
+    shippingList = map(lambda rawPrice:__ParseRawPrice(rawPrice), rawShippingList)
+    shippingList = [0 if price == None else price for price in shippingList]
+
+    # Remove prices too high or too low
+    priceList = __StDevParse(priceList)
+    shippingList = __StDevParse(shippingList)
+
     data = {
         'price-list': priceList,
         'shipping-list': shippingList
     }
     return data
 
-def __ParseList(numberList):
-    
-    #Format to string for two decimal after the point
-    numberList = ['{:.2f}'.format(number) for number in numberList]
-    
-    #Overflow bug Fix. Remove too big number first with their len()
-    averageLen = round(sum(map(lambda nmbr: len(str(nmbr)), numberList)) / len(numberList));
-    numberList = [number for number in numberList if averageLen - 1 < len(str(number)) < averageLen + 1]
-    
-    #Reformat to int 
-    numberList = [float(number) for number in numberList]
-
-    return numberList
+def __ParseRawPrice(string):
+    parsedPrice = re.search('(\d+(.\d+)?)', string.replace(',', '.'))
+    if (parsedPrice):
+        return float(parsedPrice.group())
+    else:
+        return None
 
 def __Average(numberList):
 
-    numberList = __ParseList(numberList);
-    
     if len(list(numberList)) == 0: return 0
     return sum(numberList) / len(list(numberList))
 
 def __StDev(numberList):
     
-    numberList = __ParseList(numberList);
-
     if len(list(numberList)) == 0: return 0
     
     nominator = sum(map(lambda x: (x - sum(numberList) / len(numberList)) ** 2, numberList))
     stdev = (nominator / ( len(numberList) - 1)) ** 0.5
 
     return stdev
+
+def __StDevParse(numberList):
+    
+    avg = __Average(numberList)
+    stdev = __StDev(numberList)
+    
+    # Remove prices too high or too low; Accept Between -1 StDev to +1 StDev
+    numberList = [nmbr for nmbr in numberList if (avg + stdev > nmbr > avg - stdev)]
+
+    return numberList

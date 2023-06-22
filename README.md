@@ -17,9 +17,9 @@ Get the price of any product on Ebay.
 
 Here we search for a new Nintendo switch on Ebay Canada. The first parameter is for the *search query*, the second one is for the *country* and the third one is for the *condition* of the item.
 ```PYTHON
-import EbayScraping
+import EbayScraper
 
-averagePrice = EbayScraping.Average('Nintendo Switch', 'ca', 'new')
+averagePrice = EbayScraper.Average('Nintendo Switch', 'ca', 'new')
 print(averagePrice)
 ```
 #### Output:
@@ -35,9 +35,9 @@ The output will be a **dictionary** with the average sold price, the average shi
 
 Like the **Average Function**, the first parameter is for the *search query*, the second one is for the *country* and the third one is for the *condition* of the item. The difference here is that this function return a **list** of **dictionary** with data about each item. Since the **list** returned is sorted by price + shipping, here we get the cheapest auction for an RTX 3060 in Canada.
 ```PYTHON
-import EbayScraping
+import EbayScraper
 
-itemList = EbayScraping.Items(query='RTX 3060', country='ca', condition='new', type='auction')
+itemList = EbayScraper.Items(query='RTX 3060', country='ca', condition='new', type='auction')
 print(itemList[0])
 ```
 #### Output:

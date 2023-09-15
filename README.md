@@ -1,5 +1,5 @@
 # Ebay Scraper
-This script has 2 main functions:
+#### This script has 2 main functions:
 1. Get the average price of a product based on already sold ones.
 2. Get a list of products on sale.
 

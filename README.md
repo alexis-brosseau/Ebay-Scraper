@@ -1,5 +1,7 @@
 # Ebay Scraper
-Get the price of any product on Ebay.
+This script has 2 main functions:
+1.Get the average price of any product on Ebay based on items already sold.
+2.Get a list of the current product on sale.
 
 ## Requirements: ##
 

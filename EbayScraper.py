@@ -172,7 +172,7 @@ def __Average(numberList):
 
 def __StDev(numberList):
     
-    if len(list(numberList)) == 0: return 0
+    if len(list(numberList)) <= 1: return 0
     
     nominator = sum(map(lambda x: (x - sum(numberList) / len(numberList)) ** 2, numberList))
     stdev = (nominator / ( len(numberList) - 1)) ** 0.5
@@ -185,6 +185,6 @@ def __StDevParse(numberList):
     stdev = __StDev(numberList)
     
     # Remove prices too high or too low; Accept Between -1 StDev to +1 StDev
-    numberList = [nmbr for nmbr in numberList if (avg + stdev > nmbr > avg - stdev)]
+    numberList = [nmbr for nmbr in numberList if (avg + stdev >= nmbr >= avg - stdev)]
 
     return numberList

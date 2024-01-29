@@ -11,7 +11,7 @@
 
 1. Add *EbayScraper.py* to your project directory.
 2. Import it.
-3. Your Done! You can now search for anything. *(See the bellow for more details)*
+3. Your Done! You can now search for anything. *(See below for more details)*
 
 ---
 

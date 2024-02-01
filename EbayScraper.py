@@ -22,6 +22,7 @@ countryDict = {
     'sg': '.com.sg',
     'uk': '.co.uk',
     'us': '.com',
+    'nz': '.co.nz',
 }
 
 conditionDict = {

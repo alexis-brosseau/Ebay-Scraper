@@ -17,12 +17,12 @@ countryDict = {
     'it': '.it',
     'my': '.com.my',
     'nl': '.nl',
+    'nz': '.co.nz',
     'ph': '.ph',
     'pl': '.pl',
     'sg': '.com.sg',
     'uk': '.co.uk',
     'us': '.com',
-    'nz': '.co.nz',
 }
 
 conditionDict = {

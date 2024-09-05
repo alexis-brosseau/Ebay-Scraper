@@ -9,8 +9,9 @@
 
 ## How to Use: ##
 
-1. Add *EbayScraper.py* to your project directory.
-2. Import it.
+1. Install the requirements.
+2. Add *EbayScraper.py* to your project directory.
+3. Import it.
 
 ---
 

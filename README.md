@@ -17,7 +17,7 @@
 
 ### Average Function:
 
-Here we search for the average price at wich new Nintendo Switch are sold on eBay Canada. The first parameter is for the *search query*, the second one is for the *country* and the third one is for the *condition* of the item.
+Here we search for the average price at which new Nintendo Switch are sold on eBay Canada. The first parameter is for the *search query*, the second one is for the *country* and the third one is for the *condition* of the item.
 ```PYTHON
 import EbayScraper
 

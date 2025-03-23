@@ -6,6 +6,7 @@
 ## Requirements: ##
 
 - **[BeautifulSoup4](https://pypi.org/project/beautifulsoup4/)**
+- `pip installl -r requirements.txt`
 
 ## How to Use: ##
 
@@ -17,11 +18,12 @@
 
 ### Average Function:
 
-Here we search for the average price at which new Nintendo Switch are sold on eBay Canada. The first parameter is for the *search query*, the second one is for the *country* and the third one is for the *condition* of the item.
+Here we search for the average price at which new Nintendo Switch are sold on eBay Canada. The first parameter is for the *search query*, the second one is for the *country* and the third one is for the *condition* of the item. Adding 2 more queries including location [world, default, us] and check duplicate.
 ```PYTHON
 import EbayScraper
 
-averagePrice = EbayScraper.Average(query='Nintendo Switch', country='ca', condition='new')
+averagePrice = EbayScraper.Average(query='Nintendo Switch', country='ca', condition='new', location="world", check_dup=True)
+
 print(averagePrice)
 ```
 #### Output:
@@ -45,5 +47,5 @@ print(itemList[0])
 #### Output:
 The output will be a **dictionary** with all the information about the item.
 ```PYTHON
-{'title': 'MSI Gaming GeForce RTX 3060 12GB NEW SEALED', 'price': 339.04, 'shipping': 0, 'time-left': '3d 4h left', 'time-end': '(Sun, 12:25 p.m.)', 'bid-count': 14, 'reviews-count': 0, 'url': 'https://www.Ebay.ca/itm/...'}
+{'title': 'MSI Gaming GeForce RTX 3060 12GB NEW SEALED', 'price': 339.04, 'shipping': 0, 'time-left': '3d 4h left', 'time-end': '(Sun, 12:25 p.m.)', 'bid-count': 14, 'reviews-count': 0, 'url': 'https://www.Ebay.ca/itm/...', 'image_url': 'https://i.ebayimg.com/images/g/L4wAAOSwFd1meCwi/s-l140.jpg'}
 ```

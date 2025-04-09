@@ -6,10 +6,12 @@
 
 
 import re
+import os
 import urllib.parse
 import urllib.request
 import hashlib
 from bs4 import BeautifulSoup
+from urllib.parse import urlparse, parse_qs, unquote
 
 countryDict = {
     'au': '.com.au',
@@ -164,6 +166,11 @@ def __ParseItems(soup, check_dup=True):
                 product_image = product.find("div", class_="s-item__image-wrapper image-treatment").find("img")
                 if product_image: img_url = product_image["src"]
                 else: img_url = None
+                
+                path = unquote(urlparse(product_image).path)
+                file_name = os.path.basename(path)
+                high_res_image = product_image.replace(file_name,  "s-l1600.jpg")
+                product_image = high_res_image
                 
                 rawItem = product.find('div', {'class': 's-item__info clearfix'})
 

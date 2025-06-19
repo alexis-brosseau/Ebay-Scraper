@@ -1,6 +1,6 @@
 # **⚠ No longer maintained ⚠**
-This script is no longer maintained due to ui changes between countries.
-**But!** you can still use this script by replacing the CSS class names that functions needs depending on your country.
+This script is no longer maintained due to UI changes between countries.
+**But!** You can still use this script by replacing the CSS class names that functions need depending on your country.
 
 ---
 
